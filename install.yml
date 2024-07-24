@@ -1,0 +1,243 @@
+# create a namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: freight-ns
+
+---
+# create a service account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: freight-sa
+  namespace: freight-ns
+
+---
+# create rbac
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: freight-role
+  namespace: freight-ns
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "get", "create", "delete"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["list", "get", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["list", "get"]
+
+---
+# create rolebinding to bind the service account to the role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: freight-rolebinding
+  namespace: freight-ns
+subjects:
+  - kind: ServiceAccount
+    name: freight-sa
+    namespace: freight-ns
+roleRef:
+  kind: Role
+  name: freight-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+# create rabbitmq deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: freight-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management
+          ports:
+            - containerPort: 5672
+
+---
+# create a rabbitmq service
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: freight-ns
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - protocol: TCP
+      port: 5672
+      targetPort: 5672
+
+---
+# create postgres deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: freight-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:12.5-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "password"
+            - name: POSTGRES_DB
+              value: "freight"
+
+---
+# create a postgres service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: freight-ns
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+# create a backend deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freight-backend
+  namespace: freight-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freight-backend
+  template:
+    metadata:
+      labels:
+        app: freight-backend
+    spec:
+      serviceAccountName: freight-sa
+      containers:
+        - name: freight-backend
+          image: freight-backend:0.0.1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+
+---
+# create a freight-backend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: freight-backend
+  namespace: freight-ns
+spec:
+  selector:
+    app: freight-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+# create a frontend deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freight-ui
+  namespace: freight-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freight-ui
+  template:
+    metadata:
+      labels:
+        app: freight-ui
+    spec:
+      serviceAccountName: freight-sa
+      containers:
+        - name: freight-ui
+          image: freight-ui:0.0.1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+
+---
+# create a freight-ui service
+apiVersion: v1
+kind: Service
+metadata:
+  name: freight-ui
+  namespace: freight-ns
+spec:
+  selector:
+    app: freight-ui
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+#create freight service deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freight-service
+  namespace: freight-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: freight-service
+  template:
+    metadata:
+      labels:
+        app: freight-service
+    spec:
+      serviceAccountName: freight-sa
+      containers:
+        - name: freight-service
+          image: freight-service:0.0.1
+          imagePullPolicy: Never
+          env:
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
