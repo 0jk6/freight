@@ -8,7 +8,7 @@ COPY . .
 RUN go mod download
 
 
-RUN go build -a -o main cmd/backend/main.go
+RUN CGO_ENABLED=0 go build cmd/backend/main.go
 
 
 # stage 2
