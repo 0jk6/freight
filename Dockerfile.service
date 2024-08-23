@@ -1,0 +1,23 @@
+# stage 1
+FROM golang:1.22 AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN go mod download
+
+
+RUN go build -a -o main cmd/service/main.go
+
+
+# stage 2
+FROM gcr.io/distroless/static:nonroot
+
+WORKDIR /
+
+COPY --from=builder /app/main .
+
+USER 65532:65532
+
+ENTRYPOINT ["/main"]

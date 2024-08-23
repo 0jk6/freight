@@ -130,7 +130,7 @@ spec:
       targetPort: 5432
 
 ---
-# create a backend deployment
+# create a freight-backend deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -149,8 +149,8 @@ spec:
       serviceAccountName: freight-sa
       containers:
         - name: freight-backend
-          image: freight-backend:0.0.1
-          imagePullPolicy: Never
+          image: 0jk6/freight-backend:0.0.1
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:
@@ -175,47 +175,7 @@ spec:
       targetPort: 8080
 
 ---
-# create a frontend deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: freight-ui
-  namespace: freight-ns
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: freight-ui
-  template:
-    metadata:
-      labels:
-        app: freight-ui
-    spec:
-      serviceAccountName: freight-sa
-      containers:
-        - name: freight-ui
-          image: freight-ui:0.0.1
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 3000
-
----
-# create a freight-ui service
-apiVersion: v1
-kind: Service
-metadata:
-  name: freight-ui
-  namespace: freight-ns
-spec:
-  selector:
-    app: freight-ui
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-
----
-#create freight service deployment
+#create freight-service deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -234,8 +194,8 @@ spec:
       serviceAccountName: freight-sa
       containers:
         - name: freight-service
-          image: freight-service:0.0.1
-          imagePullPolicy: Never
+          image: 0jk6/freight-service:0.0.1
+          imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_HOST
               value: "postgres"
