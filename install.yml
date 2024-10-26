@@ -149,7 +149,7 @@ spec:
       serviceAccountName: freight-sa
       containers:
         - name: freight-backend
-          image: 0jk6/freight-backend:0.0.1
+          image: 0jk6/freight-backend:0.0.2
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -196,7 +196,7 @@ spec:
       serviceAccountName: freight-sa
       containers:
         - name: freight-service
-          image: 0jk6/freight-service:0.0.1
+          image: 0jk6/freight-service:0.0.2
           imagePullPolicy: Always
           env:
             - name: POSTGRES_HOST

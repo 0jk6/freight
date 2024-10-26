@@ -27,10 +27,10 @@ jobs:
 
       - name: Build and push freight-backend image
         run: |
-          docker build -t 0jk6/freight-backend:0.0.1 -f Dockerfile.backend .
-          docker push 0jk6/freight-backend:0.0.1
+          docker build -t 0jk6/freight-backend:0.0.2 -f Dockerfile.backend .
+          docker push 0jk6/freight-backend:0.0.2
 
       - name: Build and push freight-service image
         run: |
-          docker build -t 0jk6/freight-service:0.0.1 -f Dockerfile.service .
-          docker push 0jk6/freight-service:0.0.1
+          docker build -t 0jk6/freight-service:0.0.2 -f Dockerfile.service .
+          docker push 0jk6/freight-service:0.0.2
