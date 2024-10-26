@@ -47,8 +47,8 @@ func RunJob(namespace, jobName, image, code string, command []string) {
 
 	jobsClient := clientset.BatchV1().Jobs(namespace)
 
-	backoffLimit := int32(0)           // number of retries
-	activeDeadlineSeconds := int64(10) // time limit for the job
+	backoffLimit := int32(0)            // number of retries
+	activeDeadlineSeconds := int64(100) // time limit for the job
 
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
