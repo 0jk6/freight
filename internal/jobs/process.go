@@ -1,7 +1,6 @@
 package jobs
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -86,13 +85,13 @@ func ProcessSubmissions() {
 func spinUpJob(submission models.SubmissionRequest) {
 	log.Printf("spinning up job for %s", submission.JobID)
 
-	//decode base64 data
-	base64Code, err := base64.StdEncoding.DecodeString(submission.Code)
-	if err != nil {
-		log.Println("Error decoding code")
-		return
-	}
-	submission.Code = string(base64Code)
+	// //decode base64 data
+	// base64Code, err := base64.StdEncoding.DecodeString(submission.Code)
+	// if err != nil {
+	// 	log.Println("Error decoding code")
+	// 	return
+	// }
+	// submission.Code = string(base64Code)
 
 	// log.Println(submission.Code)
 	namespace := "freight-ns"
