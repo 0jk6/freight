@@ -150,7 +150,7 @@ spec:
       containers:
         - name: freight-backend
           image: 0jk6/freight-backend:0.0.1
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
@@ -197,7 +197,7 @@ spec:
       containers:
         - name: freight-service
           image: 0jk6/freight-service:0.0.1
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: POSTGRES_HOST
               value: "postgres"
