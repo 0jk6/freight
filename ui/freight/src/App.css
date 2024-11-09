@@ -1,0 +1,65 @@
+/* Ensure the body takes the full viewport height and removes margins */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card container centered within the screen */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Input container with full height and flex layout */
+.input-container {
+  display: flex;
+  width: 100%;
+  height: 50vh;
+}
+
+/* Styles for the main input */
+.main-input {
+  width: 1200px;
+  height: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
+
+/* Styles for the side input */
+.side-input {
+  width: 30%;
+  height: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  margin-left: 10px;
+}
+
+/* Rotation animation */
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Apply animation to the submit button */
+.rotate-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  animation: rotate360 1s linear infinite; /* Rotate 360 degrees every 2 seconds */
+}
