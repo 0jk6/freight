@@ -14,3 +14,8 @@ Build docker images for the backend, service and the ui and push them to the doc
 Make sure that you edit the images in the install.yml file to match the above pushed images.
 
 - `kubectl apply -f install.yml`
+
+To run the UI
+
+- `cd ui/freight`
+- `npm run dev`
