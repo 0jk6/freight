@@ -10,8 +10,18 @@ type Cors struct {
 }
 
 func (c *Cors) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//add cors headers
+	// Add CORS headers
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	// Handle preflight request
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	// Handle actual request
 	c.handler.ServeHTTP(w, r)
 }
 
